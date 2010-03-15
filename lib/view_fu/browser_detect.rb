@@ -1,6 +1,5 @@
-module BrowserDetect
-  module Helper
-  
+module ViewFu
+  module BrowserDetect
     # check the current browser (via user agent) for the following:
     # :mozilla / :firefox
     # :ie6
@@ -19,7 +18,7 @@ module BrowserDetect
       return true if name == 'iphone' && browser_name == 'iphone'
       return true if name == 'webkit' && browser_name == 'safari'
     end
-  
+
     # find the current browser name
     def browser_name
       @browser_name ||= begin

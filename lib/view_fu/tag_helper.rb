@@ -1,52 +1,5 @@
 module ViewFu
   module TagHelper
-    # Calls a Merb Partial with a block, 
-    # which you can catch content from
-    # 
-    # Usage Example:
-    # <%= partial_block :fieldset, :legend => "Login" do %>
-    #   .. inner partial content
-    # <% end =%>
-    # 
-    # Associated Partial (_fieldset.html.erb)
-    # <fieldset>
-    #   <legend><%= locals[:legend] %></legend>
-    #   <%= catch_content %>
-    # </fieldset>
-    def partial_block(template, options={}, &block)
-      throw_content(:for_layout, block_given? ? capture(&block) : "")
-      partial(template, options)
-    end
-    
-    # Allows Easy Nested Layouts in Merb
-    # 
-    # Usage Example:
-    # 
-    # Parent Layout: layout/application.html.erb
-    # -------
-    # <html>
-    #   <head>
-    #     <title>Title</title>
-    #   </head>
-    #   <body>
-    #     <%= catch_content %>
-    #   </body>
-    # </html>
-    #
-    # SubLayout: layout/alternate.html.erb
-    # --------
-    # <%= parent_layout "application" do %>
-    #   <div class="inner_layout">
-    #     <%= catch_content %>
-    #   </div>
-    # <% end =%>
-    #
-    # Now you can use the alternate layout in any of your views as normal 
-    # and it will reuse the wrapping html on application.html.erb
-    def parent_layout(layout, &block)
-      render capture(&block), :layout => layout
-    end
-    
     # Writes a br tag
     def br
       "<br />"
@@ -60,29 +13,6 @@ module ViewFu
     # Writes a nonbreaking space
     def nbsp
       "&nbsp;"
-    end
-    
-    # ported from rails
-    def auto_discovery_link_tag(type = :rss, url = nil, tag_options = {})
-      
-      # theres gotta be a better way of setting mimetype for a file extensionin Merb..
-      unless tag_options[:type]
-        if type.to_s == "rss"
-          tag_options[:type] = "application/rss+xml"
-        elsif type.to_s == "atom"
-          tag_options[:type] = "application/atom+xml"
-        end
-      end
-
-      tag(:link, :rel => (tag_options[:rel] || "alternate"),
-                  :type  => tag_options[:type].to_s,
-                  :title => (tag_options[:title] || type.to_s.upcase),
-                  :href  => (url || "#"))
-    end
-    
-    # Writes an hr space tag
-    def space
-      "<hr class='space' />"
     end
     
     # Writes an anchor tag
@@ -195,15 +125,9 @@ module ViewFu
   
     # Check if we're on production environment
     def production?
-      Merb.env?(:production)
+      Rails.env.production?
     end
   
-    # Display will_paginate paging links
-    def paging(page_data, style = :sabros)
-      return unless page_data.is_a? WillPaginate::Collection
-      will_paginate(page_data, :class => "pagination #{style}", :inner_window => 3)
-    end
-
     # clearbit icons
     def clearbit_icon(icon, color, options = {})
       image_tag "clearbits/#{icon}.gif", {:class => "clearbits #{color}", :alt => icon}.merge(options)
