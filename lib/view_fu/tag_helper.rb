@@ -2,32 +2,30 @@ module ViewFu
   module TagHelper
     # Writes a br tag
     def br
-      "<br />"
+      "<br />".html_safe
     end
 
     # Writes an hr tag
     def hr
-      "<hr />"
+      "<hr />".html_safe
     end
     
     # Writes a nonbreaking space
     def nbsp
-      "&nbsp;"
+      "&nbsp;".html_safe
     end
     
     # Writes an anchor tag
     def anchor(anchor_name, options = {})
-      tag(:a, options.merge(:name => anchor_name)) do
-        ""
-      end
+      content_tag(:a, "", options.merge(:name => anchor_name))
     end
     
     # Writes a clear tag
     def clear_tag(tag, direction = nil)
       if tag == :br
-        "<br class=\"clear#{direction}\" />"
+        "<br class=\"clear#{direction}\" />".html_safe
       else
-        "<#{tag} class=\"clear#{direction}\"></#{tag}>"
+        "<#{tag} class=\"clear#{direction}\"></#{tag}>".html_safe
       end
     end
   

@@ -5,7 +5,7 @@ module ViewFu
       %(
         <meta name="keywords" content="#{meta_keywords}" />
         <meta name="description" content="#{meta_description}" />
-      )
+      ).html_safe
     end
 
     # Get/Set Meta Keywords
@@ -25,7 +25,7 @@ module ViewFu
         # set the default if meta_keywords is blank
         @__meta_keywords = default_meta_keywords if @__meta_keywords.blank?
       end
-      return @__meta_keywords
+      return @__meta_keywords.to_s.html_safe
     end
 
     # Get/Set Meta Description
@@ -45,7 +45,7 @@ module ViewFu
         # set the default if meta_description is blank
         @__meta_description = default_meta_description if @__meta_description.blank?
       end
-      return @__meta_description
+      return @__meta_description.to_s.html_safe
     end
   end
 end
