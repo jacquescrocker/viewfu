@@ -9,17 +9,17 @@ module ViewFu
     def hr
       "<hr />".html_safe
     end
-    
+
     # Writes a nonbreaking space
     def nbsp
       "&nbsp;".html_safe
     end
-    
+
     # Writes an anchor tag
     def anchor(anchor_name, options = {})
       content_tag(:a, "", options.merge(:name => anchor_name))
     end
-    
+
     # Writes a clear tag
     def clear_tag(tag, direction = nil)
       if tag == :br
@@ -28,7 +28,7 @@ module ViewFu
         "<#{tag} class=\"clear#{direction}\"></#{tag}>".html_safe
       end
     end
-  
+
     def current_year
       Time.now.strftime("%Y")
     end
@@ -37,41 +37,39 @@ module ViewFu
     def clear(direction = nil)
       clear_tag(:div, direction)
     end
-  
+
     # Return some lorem text
     def lorem
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     end
-    
+
     # provides a slick way to add classes inside haml attribute collections
-    # 
-    # examples:
-    #   %div{add_class("current")} 
-    #   #=> adds the "current" class to the div
-    #   
-    #   %div{add_class("current", :if => current?)} 
-    #   #=> adds the "current" class to the div if current? method 
     #
-    #   %div{add_class("highlight", :unless => logged_in?)} 
+    # examples:
+    #   %div{add_class("current")}
+    #   #=> adds the "current" class to the div
+    #
+    #   %div{add_class("current", :if => current?)}
+    #   #=> adds the "current" class to the div if current? method
+    #
+    #   %div{add_class("highlight", :unless => logged_in?)}
     #   #=> adds the "highlight" class to the div unless logged_in? method returns true
     def add_class(css_class, options = {})
       return {} unless css_class
-      
-      if options.has_key?(:unless) && options[:unless]
-        return {}
+
+      attributes = {:class => css_class}
+
+      if options.has_key?(:unless)
+        return options[:unless] ? {} : attributes
       end
-      
-      if options.has_key?(:if) && options[:if]
-        return {:class => css_class}
+
+      if options.has_key?(:if)
+        return options[:if] ? attributes : {}
       end
-      
-      if !options.has_key?(:if) and !options.has_key?(:unless)
-        {:class => css_class}
-      else
-        {}
-      end
+
+      attributes
     end
-    
+
     def add_class_if(css_class, condition)
       add_class(css_class, :if => condition)
     end
@@ -79,53 +77,55 @@ module ViewFu
     def add_class_unless(css_class, condition)
       add_class(css_class, :unless => condition)
     end
-  
+
     # Return a hidden attribute hash (useful in Haml tags - %div{hidden})
     def hide(options = {})
-      if options.has_key?(:unless) && options[:unless]
-        return {}
+      attributes = {:style => "display:none"}
+
+      if options.has_key?(:unless)
+        return options[:unless] ? {} : attributes
       end
-      
-      if options.has_key?(:if) && !options[:if]
-        return {}
+
+      if options.has_key?(:if)
+        return options[:if] ? attributes : {}
       end
-      
-      {:style => "display:none"}
+
+      attributes
     end
     alias :hidden :hide
-  
+
     # Return a hidden attribute hash if a condition evaluates to true
     def hide_if(condition)
       hide(:if => condition)
     end
     alias :hidden_if :hide_if
     alias :show_unless :hide_if
-  
+
     # Return a hidden attribute hash if a condition evaluates to false
     def hide_unless(condition)
       hide(:unless => condition)
     end
     alias :hidden_unless :hide_unless
-    alias :show_if :hide_unless 
-  
+    alias :show_if :hide_unless
+
     # Wrap a delete link
     def delete_link(*args)
       options = {:method => :delete, :confirm => "Are you sure you want to delete this?"}.merge(extract_options_from_args!(args)||{})
       args << options
       link_to(*args)
     end
-  
+
     # Wrap a block with a link
     def link_to_block(*args, &block)
       content = capture(&block)
       return link_to(content, *args)
     end
-  
+
     # Check if we're on production environment
     def production?
       Rails.env.production?
     end
-  
+
     # clearbit icons
     def clearbit_icon(icon, color, options = {})
       image_tag "clearbits/#{icon}.gif", {:class => "clearbits #{color}", :alt => icon}.merge(options)
@@ -135,11 +135,11 @@ module ViewFu
     def pixel(options = {})
       image_tag "pixel.png", options
     end
-    
+
     # check to see if an index is the first item in a collection
     def is_first(i)
       i.to_i.zero? ? {:class => "first"} : {}
     end
-    
+
   end
 end

@@ -1,18 +1,20 @@
-require 'rake'
+require "bundler"
+Bundler.setup
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |s|
-    s.name = "viewfu"
-    s.summary = "rails3 view helpers"
-    s.email = "railsjedi@gmail.com"
-    s.homepage = "http://github.com/railsjedi/viewfu"
-    s.description = "Lots of little tidbits for tidying up your views"
-    s.authors = ["Jacques Crocker"]
-    s.files =  FileList["[A-Z]*", "{bin,generators,lib,test}/**/*"]
-  end
-  Jeweler::GemcutterTasks.new
-  
-rescue LoadError
-  # puts "Jeweler, or one of its dependencies, is not available. Install it with: gem install jeweler"
+require 'rake'
+require 'rake/gempackagetask'
+
+gemspec = eval(File.read('viewfu.gemspec'))
+Rake::GemPackageTask.new(gemspec) do |pkg|
+  pkg.gem_spec = gemspec
+end
+
+desc "build the gem and release it to rubygems.org"
+task :release => :gem do
+  puts "Tagging #{gemspec.version}..."
+  system "git tag -a #{gemspec.version} -m 'Tagging #{gemspec.version}'"
+  puts "Pushing to Github..."
+  system "git push --tags"
+  puts "Pushing to rubygems.org..."
+  system "gem push pkg/#{gemspec.name}-#{gemspec.version}.gem"
 end
